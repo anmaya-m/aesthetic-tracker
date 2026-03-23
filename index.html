@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aesthetic Tracker</title>
+<style>
+body{font-family:sans-serif;padding:20px;background:#f3f0ff}
+.card{background:white;padding:15px;border-radius:15px;margin-bottom:15px}
+.task{margin:10px 0;font-size:16px}
+h2{text-align:center}
+</style>
+</head>
+<body>
+
+<h2>✨ Aesthetic Tracker</h2>
+
+<div class="card">
+<label class="task"><input type="checkbox" onclick="save()"> 💧 Water</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🥗 Protein</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🍳 Breakfast</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🚶‍♀️ Steps</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🏋️ Workout</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🍵 Low bloating</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 🍸 Alcohol control</label><br>
+<label class="task"><input type="checkbox" onclick="save()"> 😴 Sleep</label>
+</div>
+
+<div class="card">
+Score: <span id="score">0</span>/8 <br>
+🔥 Streak: <span id="streak">0</span>
+</div>
+
+<script>
+let boxes=document.querySelectorAll("input");
+
+function save(){
+ let data=[],score=0;
+ boxes.forEach((b,i)=>{data[i]=b.checked;if(b.checked)score++;});
+ localStorage.setItem("tracker",JSON.stringify(data));
+ document.getElementById("score").innerText=score;
+ updateStreak(score);
+}
+
+function load(){
+ let data=JSON.parse(localStorage.getItem("tracker"))||[];
+ let score=0;
+ boxes.forEach((b,i)=>{if(data[i]){b.checked=true;score++;}});
+ document.getElementById("score").innerText=score;
+ updateStreak(score);
+}
+
+function updateStreak(score){
+ let streak=parseInt(localStorage.getItem("streak")||0);
+ let last=localStorage.getItem("lastDate");
+ let today=new Date().toDateString();
+
+ if(last!==today){
+   if(score>=5){streak++}else{streak=0}
+   localStorage.setItem("streak",streak);
+   localStorage.setItem("lastDate",today);
+ }
+ document.getElementById("streak").innerText=streak;
+}
+
+load();
+</script>
+
+</body>
+</html>
