@@ -2,64 +2,133 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aesthetic Tracker</title>
+<title>Glow Tracker</title>
+
 <style>
-body{font-family:sans-serif;padding:20px;background:#f3f0ff}
-.card{background:white;padding:15px;border-radius:15px;margin-bottom:15px}
-.task{margin:10px 0;font-size:16px}
-h2{text-align:center}
+body {
+    font-family: -apple-system, sans-serif;
+    padding: 20px;
+    background: linear-gradient(to bottom, #fdfbff, #f3e8ff);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.card {
+    background: white;
+    padding: 16px;
+    border-radius: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+}
+
+.task {
+    margin: 12px 0;
+    font-size: 16px;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+.progress-bar {
+    height: 10px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #c4b5fd, #a78bfa);
+    transition: 0.3s;
+}
+
+.stats {
+    text-align: center;
+    font-weight: 600;
+}
 </style>
 </head>
+
 <body>
 
-<h2>✨ Aesthetic Tracker</h2>
+<h2>💅 Glow-Up Tracker</h2>
 
 <div class="card">
-<label class="task"><input type="checkbox" onclick="save()"> 💧 Water</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🥗 Protein</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🍳 Breakfast</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🚶‍♀️ Steps</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🏋️ Workout</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🍵 Low bloating</label><br>
-<label class="task"><input type="checkbox" onclick="save()"> 🍸 Alcohol control</label><br>
+
+<label class="task"><input type="checkbox" onclick="save()"> 💧 Water</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🥗 Protein</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🍳 Breakfast</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🚶‍♀️ Steps</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🏋️ Workout</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🍵 Low bloating</label>
+<label class="task"><input type="checkbox" onclick="save()"> 🍸 Drinks ≤ 3</label>
 <label class="task"><input type="checkbox" onclick="save()"> 😴 Sleep</label>
+
 </div>
 
-<div class="card">
-Score: <span id="score">0</span>/8 <br>
-🔥 Streak: <span id="streak">0</span>
+<div class="card stats">
+Glow Score: <span id="score">0</span>/8  
+<br>🔥 Streak: <span id="streak">0</span>
+
+<div class="progress-bar">
+    <div class="progress" id="progress"></div>
+</div>
+
 </div>
 
 <script>
-let boxes=document.querySelectorAll("input");
+let boxes = document.querySelectorAll("input");
 
 function save(){
- let data=[],score=0;
- boxes.forEach((b,i)=>{data[i]=b.checked;if(b.checked)score++;});
- localStorage.setItem("tracker",JSON.stringify(data));
- document.getElementById("score").innerText=score;
- updateStreak(score);
+    let data=[],score=0;
+    boxes.forEach((b,i)=>{
+        data[i]=b.checked;
+        if(b.checked) score++;
+    });
+
+    localStorage.setItem("tracker",JSON.stringify(data));
+    document.getElementById("score").innerText=score;
+    document.getElementById("progress").style.width=(score/8)*100+"%";
+
+    updateStreak(score);
 }
 
 function load(){
- let data=JSON.parse(localStorage.getItem("tracker"))||[];
- let score=0;
- boxes.forEach((b,i)=>{if(data[i]){b.checked=true;score++;}});
- document.getElementById("score").innerText=score;
- updateStreak(score);
+    let data=JSON.parse(localStorage.getItem("tracker"))||[];
+    let score=0;
+
+    boxes.forEach((b,i)=>{
+        if(data[i]){
+            b.checked=true;
+            score++;
+        }
+    });
+
+    document.getElementById("score").innerText=score;
+    document.getElementById("progress").style.width=(score/8)*100+"%";
+
+    updateStreak(score);
 }
 
 function updateStreak(score){
- let streak=parseInt(localStorage.getItem("streak")||0);
- let last=localStorage.getItem("lastDate");
- let today=new Date().toDateString();
+    let streak=parseInt(localStorage.getItem("streak")||0);
+    let last=localStorage.getItem("lastDate");
+    let today=new Date().toDateString();
 
- if(last!==today){
-   if(score>=5){streak++}else{streak=0}
-   localStorage.setItem("streak",streak);
-   localStorage.setItem("lastDate",today);
- }
- document.getElementById("streak").innerText=streak;
+    if(last!==today){
+        if(score>=5){streak++}else{streak=0}
+        localStorage.setItem("streak",streak);
+        localStorage.setItem("lastDate",today);
+    }
+
+    document.getElementById("streak").innerText=streak;
 }
 
 load();
